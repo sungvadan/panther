@@ -699,3 +699,41 @@ Created by [Kévin Dunglas](https://dunglas.fr). Sponsored by [Les-Tilleuls.coop
 
 Panther is built on top of [PHP WebDriver](https://github.com/php-webdriver/php-webdriver) and [several other FOSS libraries](https://symfony.com/blog/introducing-symfony-panther-a-browser-testing-and-web-scrapping-library-for-php#thank-you-open-source).
 It has been inspired by [Nightwatch.js](http://nightwatchjs.org/), a WebDriver-based testing tool for JavaScript.
+
+
+### Enable Code Coverage
+
+To enable code coverage with Panther usage, edit your `Kernel.php` and `phpunit.xml.dist` file as follow:
+
+```php
+<?php
+
+namespace App;
+
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+use Symfony\Component\Panther\PantherCoverageKernelTrait;
+
+class Kernel extends BaseKernel
+{
+    use MicroKernelTrait;
+    use PantherCoverageKernelTrait;
+}
+```
+
+```xml
+<!-- phpunit.xml.dist -->
+<extensions>
+    <bootstrap class="Symfony\Component\Panther\PantherCodeCoverageExtension" />
+</extensions>
+```
+
+When running PhpUnit and want to have the coverage, enable it for Panther by passing the environment `PANTHER_COVERAGE=true`
+to enable it in the Symfony Kernel.
+
+**ℹ Note:** if you use Pcov as code coverage driver, you need to set `pcov.directory` in your `php.ini` file with the
+absolute path to your `src/` directory. By default, when using Panther it's defined on `public` directory.
+
+```
+PANTHER_COVERAGE=true XDEBUG_MODE=coverage bin/phpunit --coverage-html build/coverage
+```
